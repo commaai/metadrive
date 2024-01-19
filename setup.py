@@ -53,7 +53,7 @@ install_requires = [
     "panda3d-gltf==0.13",  # 0.14 will bring some problems
     "pillow",
     "pytest",
-    "opencv-python",
+    "opencv-python-headless",
     "lxml",
     "scipy",
     "psutil",
