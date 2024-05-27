@@ -84,7 +84,7 @@ setup(
     python_requires='>=3.6, <3.13',  # do version check with assert
     version=VERSION,
     description="An open-ended driving simulator with infinite scenes",
-    url="https://github.com/metadriverse/metadrive",
+    url="https://github.com/BBBmau/metadrive",
     author="MetaDrive Team",
     author_email="quanyili0057@gmail.com, pzh@cs.ucla.edu",
     packages=packages,
