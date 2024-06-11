@@ -2,6 +2,7 @@ from pathlib import Path
 
 VERSION = "0.4.2.3"
 
+
 def asset_version():
     root_dir = Path(__file__).parent
     asset_path = root_dir / "assets"
