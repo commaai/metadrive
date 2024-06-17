@@ -26,8 +26,7 @@ def is_win():
     return sys.platform == "win32"
 
 
-assert sys.version_info.major == 3 and sys.version_info.minor >= 6 and sys.version_info.minor < 12, \
-    "python version >= 3.6, <3.12 is required"
+assert (3,6) <= sys.version_info < (4,), "python version >= 3.6, <4 is required"
 
 this_directory = path.abspath(path.dirname(__file__))
 with open(path.join(this_directory, 'README.md'), encoding='utf-8') as f:
@@ -48,8 +47,7 @@ install_requires = [
     "seaborn",
     "tqdm",
     "progressbar",
-    # "panda3d==1.10.8",
-    "panda3d==1.10.13",
+    "panda3d==1.10.14",
     "panda3d-gltf==0.13",  # 0.14 will bring some problems
     "pillow",
     "pytest",
@@ -82,7 +80,7 @@ ros_requirement = [
 
 setup(
     name="metadrive-simulator",
-    python_requires='>=3.6, <3.12',  # do version check with assert
+    python_requires='>=3.6, <4',  # do version check with assert
     version=VERSION,
     description="An open-ended driving simulator with infinite scenes",
     url="https://github.com/metadriverse/metadrive",
