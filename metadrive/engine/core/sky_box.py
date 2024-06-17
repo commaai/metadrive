@@ -30,7 +30,7 @@ class SkyBox(BaseObject):
         skybox_texture.set_magfilter(SamplerState.FT_linear)
         skybox_texture.set_wrap_u(SamplerState.WM_repeat)
         skybox_texture.set_wrap_v(SamplerState.WM_mirror)
-        skybox_texture.set_anisotropic_degree(16)
+        skybox_texture.set_anisotropic_degree(1)
         skybox.set_texture(skybox_texture)
 
         gles = ConfigVariableString("load-display").getValue()
