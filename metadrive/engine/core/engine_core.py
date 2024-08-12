@@ -83,8 +83,6 @@ class EngineCore(ShowBase.ShowBase):
     DEBUG = False
     global_config = None  # global config can exist before engine initialization
     loadPrcFileData("", "window-title {}".format(EDITION))
-    loadPrcFileData("", "framebuffer-multisample 1")
-    loadPrcFileData("", "multisamples 8")
     loadPrcFileData("", "bullet-filter-algorithm groups-mask")
     loadPrcFileData("", "audio-library-name null")
     loadPrcFileData("", "model-cache-compressed-textures 1")
@@ -98,14 +96,19 @@ class EngineCore(ShowBase.ShowBase):
     # loadPrcFileData("", "allow-incomplete-render #t")
     # loadPrcFileData("", "# even-animation #t")
 
-    # loadPrcFileData("", " framebuffer-srgb truein")
     # loadPrcFileData("", "geom-cache-size 50000")
 
     # v-sync, it seems useless
     # loadPrcFileData("", "sync-video 1")
 
-    # for debug use
-    # loadPrcFileData("", "gl-version 3 2")
+    if is_mac():
+      # latest macOS supported openGL version
+      loadPrcFileData("", "gl-version 4 1")
+      loadPrcFileData("", " framebuffer-srgb truein")
+    else:
+      # anti-aliasing does not work on macOS
+      loadPrcFileData("", "framebuffer-multisample 1")
+      loadPrcFileData("", "multisamples 8")
 
     def __init__(self, global_config):
         # if EngineCore.global_config is not None:
@@ -159,9 +162,6 @@ class EngineCore(ShowBase.ShowBase):
                 if self.global_config["show_interface"]:
                     # Disable useless camera capturing in none mode
                     self.global_config["show_interface"] = False
-
-        if is_mac() and (self.mode == RENDER_MODE_OFFSCREEN):  # Mac don't support offscreen rendering
-            self.mode = RENDER_MODE_ONSCREEN
 
         loadPrcFileData("", "win-size {} {}".format(*self.global_config["window_size"]))
 
@@ -294,12 +294,13 @@ class EngineCore(ShowBase.ShowBase):
                 if self.global_config["daytime"] is not None:
                     self.render_pipeline.daytime_mgr.time = self.global_config["daytime"]
             else:
-                self.pbrpipe = init(
-                    msaa_samples=16,
-                    use_hardware_skinning=True,
-                    # use_normal_maps=True,
-                    use_330=False
-                )
+                if not is_mac():
+                    self.pbrpipe = init(
+                        msaa_samples=16,
+                        use_hardware_skinning=True,
+                        # use_normal_maps=True,
+                        use_330=False
+                    )
 
                 self.sky_box = SkyBox(not self.global_config["show_skybox"])
                 self.sky_box.attach_to_world(self.render, self.physics_world)
