@@ -1,7 +1,7 @@
 import copy
 from metadrive.engine.logger import get_logger
 
-from metadrive.utils import generate_gif
+from metadrive.utils.doc_utils import generate_gif
 import math
 from collections import deque
 from typing import Optional, Union, Iterable

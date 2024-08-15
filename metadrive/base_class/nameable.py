@@ -1,6 +1,6 @@
 import logging
 
-from metadrive.utils import random_string
+from metadrive.utils.random_utils import random_string
 
 
 class Nameable:

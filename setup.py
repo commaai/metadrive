@@ -41,7 +41,6 @@ install_requires = [
     "numpy>=1.21.6",
     "matplotlib",
     "pandas",
-    "pygame",
     "tqdm",
     "yapf",
     "seaborn",
