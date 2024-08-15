@@ -40,7 +40,6 @@ install_requires = [
     "gymnasium>=0.28",
     "numpy>=1.21.6",
     "matplotlib",
-    "pandas",
     "tqdm",
     "yapf",
     "seaborn",
