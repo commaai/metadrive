@@ -42,7 +42,6 @@ install_requires = [
     "matplotlib",
     "tqdm",
     "yapf",
-    "seaborn",
     "tqdm",
     "progressbar",
     "panda3d==1.10.14",
