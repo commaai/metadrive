@@ -54,7 +54,6 @@ install_requires = [
     "lxml",
     "scipy",
     "psutil",
-    "geopandas",
     "shapely",
     "filelock",
 ]
