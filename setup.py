@@ -50,7 +50,6 @@ install_requires = [
     "pillow",
     "pytest",
     "opencv-python-headless",
-    "lxml",
     "psutil",
     "shapely",
     "filelock",
