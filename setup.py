@@ -39,8 +39,6 @@ install_requires = [
     "requests",
     "gymnasium>=0.28",
     "numpy>=1.21.6",
-    "matplotlib",
-    "tqdm",
     "yapf",
     "tqdm",
     "progressbar",
