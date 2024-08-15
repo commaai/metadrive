@@ -51,7 +51,6 @@ install_requires = [
     "pytest",
     "opencv-python-headless",
     "lxml",
-    "scipy",
     "psutil",
     "shapely",
     "filelock",

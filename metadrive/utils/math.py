@@ -2,7 +2,10 @@ import math
 from typing import Tuple
 
 import numpy as np
-from scipy.interpolate import interp1d
+try:
+  from scipy.interpolate import interp1d
+except:
+  pass
 
 number_pos_inf = float("inf")
 number_neg_inf = float("-inf")
