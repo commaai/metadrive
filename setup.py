@@ -43,7 +43,6 @@ install_requires = [
     "pygame",
     "tqdm",
     "yapf",
-    "seaborn",
     "tqdm",
     "progressbar",
     "panda3d==1.10.14",
