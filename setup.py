@@ -50,7 +50,6 @@ install_requires = [
     "pillow",
     "opencv-python-headless",
     "lxml",
-    "scipy",
     "psutil",
     "shapely",
     "filelock",
@@ -60,6 +59,7 @@ install_requires = [
 test_requirement = [
     "pandas",
     "pytest",
+    "scipy"
 ]
 
 cuda_requirement = [
