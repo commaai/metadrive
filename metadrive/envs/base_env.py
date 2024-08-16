@@ -215,6 +215,8 @@ BASE_DEFAULT_CONFIG = dict(
     disable_model_compression=True,
     # Whether to disable the collision detection (useful for debugging / replay logged scenarios)
     disable_collision=False,
+    # Whether to use anisotropic filtering. Very expensive option, disabled by default.
+    anisotropic_filtering=False,
 
     # ===== Terrain =====
     # The size of the square map region, which is centered at [0, 0]. The map objects outside it are culled.
