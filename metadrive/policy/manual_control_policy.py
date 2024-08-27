@@ -1,7 +1,6 @@
 from metadrive.engine.core.manual_controller import KeyboardController, SteeringWheelController, XboxController
 from metadrive.engine.engine_utils import get_global_config
 from metadrive.engine.logger import get_logger
-from metadrive.examples import expert
 from metadrive.policy.env_input_policy import EnvInputPolicy
 
 logger = get_logger()
@@ -47,6 +46,9 @@ class ManualControlPolicy(EnvInputPolicy):
         config = self.engine.global_config
         self.enable_expert = enable_expert
 
+        from metadrive.examples import expert
+        self.expert = expert
+
         if config["manual_control"] and config["use_render"]:
             self.engine.accept("t", self.toggle_takeover)
             pygame_control = False
@@ -66,12 +68,11 @@ class ManualControlPolicy(EnvInputPolicy):
             self.controller = None
 
     def act(self, agent_id):
-
         self.controller.process_others(takeover_callback=self.toggle_takeover)
 
         try:
             if self.engine.current_track_agent.expert_takeover and self.enable_expert:
-                return expert(self.engine.current_track_agent)
+                return self.expert(self.engine.current_track_agent)
         except (ValueError, AssertionError):
             # if observation doesn't match, fall back to manual control
             print("Current observation does not match the format that expert can accept.")
