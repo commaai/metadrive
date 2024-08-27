@@ -15,7 +15,7 @@ from metadrive.engine.logger import get_logger
 from metadrive.version import asset_version
 
 ROOT_DIR = Path(__file__).parent
-ASSET_URL = "https://github.com/metadriverse/metadrive/releases/download/MetaDrive-{}/assets.zip".format(VERSION)
+ASSET_URL = "https://github.com/commaai/metadrive/releases/download/MetaDrive-minimal/assets.zip"
 
 
 class MyProgressBar():
