@@ -124,6 +124,8 @@ BASE_DEFAULT_CONFIG = dict(
         use_special_color=False,
         # Clear wheel friction, so it can not move by setting steering and throttle/brake. Used for ReplayPolicy
         no_wheel_friction=False,
+        # Whether to render the 3D model of the vehicle
+        render_vehicle=True,
 
         # ===== image capturing =====
         # Which camera to use for image observation. It should be a sensor registered in sensor config.

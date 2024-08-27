@@ -140,6 +140,8 @@ class BaseVehicle(BaseObject, BaseVehicleState):
         self.set_metadrive_type(MetaDriveType.VEHICLE)
         use_special_color = self.config["use_special_color"]
 
+        self.render_vehicle = vehicle_config["render_vehicle"]
+
         # build vehicle physics model
         vehicle_chassis = self._create_vehicle_chassis()
         self.add_body(vehicle_chassis.getChassis())
@@ -622,7 +624,7 @@ class BaseVehicle(BaseObject, BaseVehicleState):
         return vehicle_chassis
 
     def _add_visualization(self):
-        if self.render:
+        if self.render and self.render_vehicle:
             [path, scale, offset, HPR] = self.path
             if path not in BaseVehicle.model_collection:
                 car_model = self.loader.loadModel(AssetLoader.file_path("models", path))
@@ -670,7 +672,7 @@ class BaseVehicle(BaseObject, BaseVehicleState):
         wheel_np = self.origin.attachNewNode("wheel")
         self._node_path_list.append(wheel_np)
 
-        if self.render:
+        if self.render and self.render_vehicle:
             model = 'right_tire_front.gltf' if front else 'right_tire_back.gltf'
             model_path = AssetLoader.file_path("models", os.path.dirname(self.path[0]), model)
             wheel_model = self.loader.loadModel(model_path)
