@@ -40,7 +40,6 @@ install_requires = [
     "gymnasium>=0.28",
     "numpy>=1.21.6",
     "matplotlib",
-    "pygame",
     "tqdm",
     "yapf",
     "tqdm",
@@ -54,6 +53,10 @@ install_requires = [
     "shapely",
     "filelock",
     "Pygments",
+]
+
+top_down_requirement = [
+    "pygame"
 ]
 
 test_requirement = [
