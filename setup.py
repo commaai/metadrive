@@ -102,6 +102,11 @@ setup(
 )
 
 """
+how to update for xx:
+1. make sure assets are downloaded: `python -m metadrive.pull_asset --update`
+2. build package `python -m build`
+3. update github release with files under dist/
+
 How to publish to pypi and Draft github Release?  Noted by Zhenghao and Quanyi in Dec 27, 2020.
 
 0. Checkout a new branch from main called releases/x.y.z
