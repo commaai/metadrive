@@ -104,11 +104,14 @@ class EngineCore(ShowBase.ShowBase):
     if is_mac():
       # latest macOS supported openGL version
       loadPrcFileData("", "gl-version 4 1")
-      loadPrcFileData("", " framebuffer-srgb truein")
+      loadPrcFileData("", "color-bits 8 8 8")
+      loadPrcFileData("", "alpha-bits 8")
     else:
       # anti-aliasing does not work on macOS
       loadPrcFileData("", "framebuffer-multisample 1")
       loadPrcFileData("", "multisamples 8")
+      loadPrcFileData("", "color-bits 16 16 16")
+      loadPrcFileData("", "alpha-bits 16")
 
     def __init__(self, global_config):
         # if EngineCore.global_config is not None:
@@ -294,7 +297,13 @@ class EngineCore(ShowBase.ShowBase):
                 if self.global_config["daytime"] is not None:
                     self.render_pipeline.daytime_mgr.time = self.global_config["daytime"]
             else:
-                if not is_mac():
+                if is_mac():
+                    self.pbrpipe = init(
+                        msaa_samples = 0,
+                        # use_hardware_skinning=True,
+                        use_330=True
+                    )
+                else:
                     self.pbrpipe = init(
                         msaa_samples=16,
                         use_hardware_skinning=True,

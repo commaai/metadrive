@@ -10,7 +10,7 @@ out vec4 o_color;
 #endif
 
 void main() {
-    vec3 color = texture2D(tex, v_texcoord).rgb;
+    vec3 color = texture(tex, v_texcoord).rgb;
 
     color *= exposure;
     color = max(vec3(0.0), color - vec3(0.004));
