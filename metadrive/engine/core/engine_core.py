@@ -104,15 +104,11 @@ class EngineCore(ShowBase.ShowBase):
     if is_mac():
       # latest macOS supported openGL version
       loadPrcFileData("", "gl-version 4 1")
-      loadPrcFileData("", "color-bits 8 8 8")
-      loadPrcFileData("", "alpha-bits 8")
       loadPrcFileData("", "framebuffer-multisample 1")
       loadPrcFileData("", "multisamples 4")
     else:
       loadPrcFileData("", "framebuffer-multisample 1")
       loadPrcFileData("", "multisamples 8")
-      loadPrcFileData("", "color-bits 16 16 16")
-      loadPrcFileData("", "alpha-bits 16")
 
     def __init__(self, global_config):
         # if EngineCore.global_config is not None:
