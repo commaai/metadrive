@@ -107,6 +107,15 @@ class EngineCore(ShowBase.ShowBase):
     # for debug use
     # loadPrcFileData("", "gl-version 3 2")
 
+    if is_mac():
+      # latest macOS supported openGL version
+      loadPrcFileData("", "gl-version 4 1")
+      loadPrcFileData("", "framebuffer-multisample 1")
+      loadPrcFileData("", "multisamples 4")
+    else:
+      loadPrcFileData("", "framebuffer-multisample 1")
+      loadPrcFileData("", "multisamples 8")
+
     def __init__(self, global_config):
         # if EngineCore.global_config is not None:
         #     # assert global_config is EngineCore.global_config, \
@@ -294,12 +303,19 @@ class EngineCore(ShowBase.ShowBase):
                 if self.global_config["daytime"] is not None:
                     self.render_pipeline.daytime_mgr.time = self.global_config["daytime"]
             else:
-                self.pbrpipe = init(
-                    msaa_samples=16,
-                    use_hardware_skinning=True,
-                    # use_normal_maps=True,
-                    use_330=False
-                )
+                if is_mac():
+                    self.pbrpipe = init(
+                        msaa_samples = 4,
+                        # use_hardware_skinning=True,
+                        use_330=True
+                    )
+                else:
+                    self.pbrpipe = init(
+                        msaa_samples=16,
+                        use_hardware_skinning=True,
+                        # use_normal_maps=True,
+                        use_330=False
+                    )
 
                 self.sky_box = SkyBox(not self.global_config["show_skybox"], self.global_config["anisotropic_filtering"])
                 self.sky_box.attach_to_world(self.render, self.physics_world)
