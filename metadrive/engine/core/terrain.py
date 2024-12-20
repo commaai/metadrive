@@ -423,7 +423,7 @@ class Terrain(BaseObject, ABC):
             tex.set_wrap_v(v_wrap)
             tex.setMinfilter(filter_type)
             tex.setMagfilter(filter_type)
-            tex.setAnisotropicDegree(anisotropic_degree)
+            tex.setAnisotropicDegree(1)
 
         # # sidewalk
         # self.side_tex = self.loader.loadTexture(AssetLoader.file_path("textures", "sidewalk", "color.png"))
@@ -450,7 +450,7 @@ class Terrain(BaseObject, ABC):
             tex.set_wrap_v(v_wrap)
             tex.setMinfilter(filter_type)
             tex.setMagfilter(filter_type)
-            tex.setAnisotropicDegree(anisotropic_degree)
+            tex.setAnisotropicDegree(1)
         # self.road_texture_displacement = self.loader.loadTexture(AssetLoader.file_path("textures", "sci", "normal.jpg"))
         # self.road_texture.setMinfilter(minfilter)
         # self.road_texture.setAnisotropicDegree(anisotropic_degree)
