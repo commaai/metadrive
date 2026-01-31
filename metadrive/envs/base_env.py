@@ -12,6 +12,7 @@ from metadrive.component.sensors.base_camera import BaseCamera
 from metadrive.component.sensors.dashboard import DashBoard
 from metadrive.component.sensors.distance_detector import LaneLineDetector, SideDetector
 from metadrive.component.sensors.lidar import Lidar
+from metadrive.constants import DEFAULT_SENSOR_HPR, DEFAULT_SENSOR_OFFSET
 from metadrive.constants import RENDER_MODE_NONE, DEFAULT_AGENT
 from metadrive.constants import RENDER_MODE_ONSCREEN, RENDER_MODE_OFFSCREEN
 from metadrive.constants import TerminationState, TerrainProperty
@@ -120,6 +121,8 @@ BASE_DEFAULT_CONFIG = dict(
         show_line_to_dest=False,
         # Whether to draw a line from current vehicle position to the next navigation point
         show_line_to_navi_mark=False,
+        # Whether to draw left / right arrow in the interface to denote the navigation direction
+        show_navigation_arrow=True,
         # If set to True, the vehicle will be in color green in top-down renderer or MARL setting
         use_special_color=False,
         # Clear wheel friction, so it can not move by setting steering and throttle/brake. Used for ReplayPolicy
@@ -158,6 +161,7 @@ BASE_DEFAULT_CONFIG = dict(
         length=None,
         height=None,
         mass=None,
+        scale=None,  # triplet (x, y, z)
 
         # Set the vehicle size only for pygame top-down renderer. It doesn't affect the physical size!
         top_down_width=None,
@@ -213,6 +217,8 @@ BASE_DEFAULT_CONFIG = dict(
     disable_model_compression=True,
     # Whether to use anisotropic filtering. Very expensive option.
     anisotropic_filtering=True,
+    # Whether to disable the collision detection (useful for debugging / replay logged scenarios)
+    disable_collision=False,
 
     # ===== Terrain =====
     # The size of the square map region, which is centered at [0, 0]. The map objects outside it are culled.
@@ -318,7 +324,6 @@ class BaseEnv(gym.Env):
 
         # scenarios
         self.start_index = 0
-        self.num_scenarios = self.config["num_scenarios"]
 
     def _post_process_config(self, config):
         """Add more special process to merged config"""
@@ -330,7 +335,7 @@ class BaseEnv(gym.Env):
 
         # Adjust terrain
         n = config["map_region_size"]
-        assert (n & (n - 1)) == 0 and 0 < n <= 2048, "map_region_size should be pow of 2 and < 2048."
+        assert (n & (n - 1)) == 0 and 0 < n <= 2048, "map_region_size should be pow of 2 and <= 2048."
         TerrainProperty.map_region_size = config["map_region_size"]
 
         # Multi-Thread
@@ -439,7 +444,7 @@ class BaseEnv(gym.Env):
         return self._get_step_return(actions, engine_info=engine_info)  # collect observation, reward, termination
 
     def _preprocess_actions(self, actions: Union[np.ndarray, Dict[AnyStr, np.ndarray], int]) \
-        -> Union[np.ndarray, Dict[AnyStr, np.ndarray], int]:
+            -> Union[np.ndarray, Dict[AnyStr, np.ndarray], int]:
         if not self.is_multi_agent:
             actions = {v_id: actions for v_id in self.agents.keys()}
         else:
@@ -564,7 +569,9 @@ class BaseEnv(gym.Env):
                     self.main_camera.set_bird_view_pos_hpr(current_track_agent.position)
                 for name, sensor in self.engine.sensors.items():
                     if hasattr(sensor, "track") and name != "main_camera":
-                        sensor.track(current_track_agent.origin, [0., 0.8, 1.5], [0, 0.59681, 0])
+                        sensor.track(current_track_agent.origin, DEFAULT_SENSOR_OFFSET, DEFAULT_SENSOR_HPR)
+        # Step the env to avoid the black screen in the first frame.
+        self.engine.taskMgr.step()
 
     def _get_reset_return(self, reset_info):
         # TODO: figure out how to get the information of the before step
@@ -634,7 +641,7 @@ class BaseEnv(gym.Env):
 
         if not self.is_multi_agent:
             return self._wrap_as_single_agent(obses), self._wrap_as_single_agent(rewards), \
-                   self._wrap_as_single_agent(terminateds), self._wrap_as_single_agent(
+                self._wrap_as_single_agent(terminateds), self._wrap_as_single_agent(
                 truncateds), self._wrap_info_as_single_agent(step_infos)
         else:
             return obses, rewards, terminateds, truncateds, step_infos
@@ -685,6 +692,10 @@ class BaseEnv(gym.Env):
     @property
     def current_seed(self):
         return self.engine.global_random_seed
+
+    @property
+    def num_scenarios(self):
+        return self.config["num_scenarios"]
 
     @property
     def observations(self):
@@ -892,8 +903,7 @@ class BaseEnv(gym.Env):
         self.main_camera.track(current_track_agent)
         for name, sensor in self.engine.sensors.items():
             if hasattr(sensor, "track") and name != "main_camera":
-                camera_video_posture = [0, 0.59681, 0]
-                sensor.track(current_track_agent.origin, constants.DEFAULT_SENSOR_OFFSET, camera_video_posture)
+                sensor.track(current_track_agent.origin, constants.DEFAULT_SENSOR_OFFSET, DEFAULT_SENSOR_HPR)
         return
 
     def next_seed_reset(self):
