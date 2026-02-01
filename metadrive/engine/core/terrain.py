@@ -555,8 +555,8 @@ class Terrain(BaseObject, ABC):
                 center_point,
                 size=self._semantic_map_size,
                 pixels_per_meter=self._semantic_map_pixel_per_meter,
-                polyline_thickness=int(self._semantic_map_pixel_per_meter / 11),
-                # 1 when map_region_size == 2048, 2 for others
+                white_line_thickness=2,
+                yellow_line_thickness=3,
                 layer=layer
             )
         else:

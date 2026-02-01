@@ -47,10 +47,11 @@ Please feel free to contact us if you have any suggestions or ideas!
    action.ipynb
    reward_cost_done.ipynb
    training.ipynb
+   multigoal_intersection.ipynb
 
 .. toctree::
-   :hidden:
-   :maxdepth: 2
+   :includehidden:
+   :maxdepth: 1
    :caption: Concepts and Customization
 
    new_env.ipynb
@@ -63,6 +64,7 @@ Please feel free to contact us if you have any suggestions or ideas!
    navigation.ipynb
    scenario_description.ipynb
    record_replay.ipynb
+   simgen_render.ipynb
 
 .. toctree::
    :hidden:
