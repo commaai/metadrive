@@ -3,7 +3,6 @@
 import numpy as np
 from direct.showbase.ShowBase import ShowBase
 from panda3d.core import *
-from shapely import geometry
 # @time_me
 from metadrive.utils.vertex import make_polygon_model
 

@@ -1,4 +1,4 @@
-import gymnasium as gym
+from metadrive.utils import gym_stubs as gym
 from metadrive.engine.engine_utils import get_global_config
 import numpy as np
 
@@ -111,16 +111,16 @@ class ExtraEnvInputPolicy(EnvInputPolicy):
         return action
 
     @classmethod
-    def set_extra_input_space(cls, extra_input_space: gym.spaces.space.Space):
+    def set_extra_input_space(cls, extra_input_space: gym.Space):
         """
         Set the space for this extra input. Error will be thrown, if this class property is set already.
         Args:
-            extra_input_space: gym.spaces.space.Space
+            extra_input_space: gym.Space
 
         Returns: None
 
         """
-        assert isinstance(extra_input_space, gym.spaces.space.Space)
+        assert isinstance(extra_input_space, gym.Space)
         ExtraEnvInputPolicy.extra_input_space = extra_input_space
 
     @classmethod

@@ -1,4 +1,4 @@
-import gymnasium as gym
+from metadrive.utils import gym_stubs as gym
 from metadrive.component.sensors.base_camera import BaseCamera
 import numpy as np
 

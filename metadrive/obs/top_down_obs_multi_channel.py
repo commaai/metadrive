@@ -1,6 +1,6 @@
 from collections import deque
 
-import gymnasium as gym
+from metadrive.utils import gym_stubs as gym
 import math
 import numpy as np
 

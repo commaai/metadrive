@@ -2,7 +2,7 @@ import copy
 from metadrive.engine.engine_utils import get_global_config
 from metadrive.constants import DEFAULT_AGENT
 
-from gymnasium.spaces import Space
+from metadrive.utils.gym_stubs import Space
 
 from metadrive.base_class.randomizable import Randomizable
 

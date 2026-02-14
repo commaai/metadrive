@@ -36,12 +36,9 @@ packages = find_namespace_packages(
 print("We will install the following packages: ", packages)
 
 install_requires = [
-    "gymnasium>=0.28",
     "numpy>=1.21.6",
     "panda3d==1.10.14",
     "panda3d-gltf==0.13",  # 0.14 will bring some problems
-    "opencv-python-headless",
-    "shapely",
 ]
 
 top_down_requirement = [

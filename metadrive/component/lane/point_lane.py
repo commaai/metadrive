@@ -1,6 +1,5 @@
 import math
 from metadrive.type import MetaDriveType
-from shapely import geometry
 
 from typing import Tuple, Union
 

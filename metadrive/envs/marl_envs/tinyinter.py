@@ -1,6 +1,6 @@
 import copy
 
-import gymnasium as gym
+from metadrive.utils import gym_stubs as gym
 import numpy as np
 
 from metadrive.envs.marl_envs.marl_intersection import MultiAgentIntersectionEnv

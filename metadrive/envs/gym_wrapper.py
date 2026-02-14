@@ -1,7 +1,7 @@
 try:
     import inspect
     from typing import Any, Dict, Callable
-    import gymnasium
+    from metadrive.utils import gym_stubs as gymnasium
     import gym
     import gym.spaces
 
@@ -17,8 +17,6 @@ try:
             return gym.spaces.Discrete(n=int(space.n), start=int(space.start))
         elif isinstance(space, gymnasium.spaces.MultiDiscrete):
             return gym.spaces.MultiDiscrete(nvec=space.nvec)
-        elif isinstance(space, gymnasium.spaces.Tuple):
-            return gym.spaces.Tuple([gymnasiumToGym(subspace) for subspace in space.spaces])
         elif isinstance(space, gymnasium.spaces.Dict):
             return gym.spaces.Dict({key: gymnasiumToGym(subspace) for key, subspace in space.spaces.items()})
         else:
@@ -36,8 +34,6 @@ try:
             return gymnasium.spaces.Discrete(n=int(space.n), start=int(space.start))
         elif isinstance(space, gym.spaces.MultiDiscrete):
             return gymnasium.spaces.MultiDiscrete(nvec=space.nvec)
-        elif isinstance(space, gym.spaces.Tuple):
-            return gymnasium.spaces.Tuple([gymToGymnasium(subspace) for subspace in space.spaces])
         elif isinstance(space, gym.spaces.Dict):
             return gymnasium.spaces.Dict({key: gymToGymnasium(subspace) for key, subspace in space.spaces.items()})
         else:

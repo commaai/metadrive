@@ -6,8 +6,6 @@ import numpy as np
 from panda3d.bullet import BulletWorld
 from panda3d.core import Vec3
 from panda3d.core import Vec4, BitMask32
-from shapely.geometry import Polygon
-
 from metadrive.type import MetaDriveType
 from metadrive.version import VERSION
 
@@ -510,27 +508,59 @@ class TerrainProperty:
     @classmethod
     def clip_polygon(cls, polygon):
         """
-        Clip the Polygon. Make it fit into the map region and throw away the part outside the map region
+        Clip the Polygon. Make it fit into the map region and throw away the part outside the map region.
+        Uses the Sutherland-Hodgman algorithm.
         Args:
-            map_center: center point of the map
             polygon: a list of 2D points
 
         Returns: A list of polygon or None
 
         """
         x = y = cls.map_region_size / 2
-        _rect_polygon = Polygon([(-x, y), (x, y), (x, -y), (-x, -y)])
-        polygon = Polygon(polygon)
+        clip_edges = [
+            ((-x, -y), (x, -y)),   # bottom
+            ((x, -y), (x, y)),     # right
+            ((x, y), (-x, y)),     # top
+            ((-x, y), (-x, -y)),   # left
+        ]
+
+        def _inside(p, edge_start, edge_end):
+            return (edge_end[0] - edge_start[0]) * (p[1] - edge_start[1]) - \
+                   (edge_end[1] - edge_start[1]) * (p[0] - edge_start[0]) >= 0
+
+        def _intersect(p1, p2, es, ee):
+            x1, y1 = p1
+            x2, y2 = p2
+            x3, y3 = es
+            x4, y4 = ee
+            denom = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4)
+            if abs(denom) < 1e-12:
+                return p1
+            t = ((x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)) / denom
+            return (x1 + t * (x2 - x1), y1 + t * (y2 - y1))
+
         try:
-            polygon = _rect_polygon.intersection(polygon)
-            # Extract the points of the clipped polygon.
-            if polygon.is_empty:
+            output = list(polygon)
+            for es, ee in clip_edges:
+                if not output:
+                    return None
+                inp = output
+                output = []
+                for i in range(len(inp)):
+                    cur = inp[i]
+                    nxt = inp[(i + 1) % len(inp)]
+                    if _inside(cur, es, ee):
+                        if _inside(nxt, es, ee):
+                            output.append(nxt)
+                        else:
+                            output.append(_intersect(cur, nxt, es, ee))
+                    elif _inside(nxt, es, ee):
+                        output.append(_intersect(cur, nxt, es, ee))
+                        output.append(nxt)
+            if not output:
                 return None
-            else:
-                # Handle cases where the intersection might result in multiple geometries
-                return [list(polygon.exterior.coords)] if isinstance(polygon, Polygon) else \
-                    [list(geom.exterior.coords) for geom in polygon.geoms]
-        except Exception as error:
+            return [output]
+        except Exception:
             return None
 
 

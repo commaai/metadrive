@@ -3,7 +3,6 @@ from abc import ABCMeta, abstractmethod
 from typing import Tuple, Union, AnyStr
 
 import numpy as np
-from shapely import geometry
 
 from metadrive.constants import MetaDriveType
 from metadrive.utils import norm
@@ -108,10 +107,20 @@ class AbstractLane(MetaDriveType):
 
     def point_on_lane(self, point):
         """
-        Return True if the point is in the lane polygon
+        Return True if the point is in the lane polygon (ray-casting algorithm).
         """
-        s_point = geometry.Point(point[0], point[1])
-        return self.shapely_polygon.contains(s_point)
+        x, y = point[0], point[1]
+        coords = self.polygon
+        n = len(coords)
+        inside = False
+        j = n - 1
+        for i in range(n):
+            xi, yi = coords[i][0], coords[i][1]
+            xj, yj = coords[j][0], coords[j][1]
+            if ((yi > y) != (yj > y)) and (x < (xj - xi) * (y - yi) / (yj - yi) + xi):
+                inside = not inside
+            j = i
+        return inside
 
     @property
     def polygon(self):
@@ -124,8 +133,17 @@ class AbstractLane(MetaDriveType):
 
     @property
     def shapely_polygon(self):
-        """Return the polygon in shapely.geometry.Polygon"""
+        """Return a simple polygon wrapper with .exterior.coords interface"""
         if self._shapely_polygon is None:
             assert self.polygon is not None
-            self._shapely_polygon = geometry.Polygon(geometry.LineString(self.polygon))
+
+            class _Exterior:
+                def __init__(self, coords):
+                    self.coords = list(coords)
+
+            class _SimplePolygon:
+                def __init__(self, coords):
+                    self.exterior = _Exterior(coords)
+
+            self._shapely_polygon = _SimplePolygon(self.polygon)
         return self._shapely_polygon

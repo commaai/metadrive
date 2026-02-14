@@ -1,6 +1,5 @@
 from typing import Union
 
-import cv2
 import numpy as np
 from panda3d.core import NodePath
 
@@ -113,6 +112,7 @@ class BaseCamera(ImageBuffer, BaseSensor):
         """
         Put camera to an object and save the image to the disk
         """
+        import cv2
         img = self.get_image(base_object)
         cv2.imwrite(name, img)
 
