@@ -89,11 +89,16 @@ def dilate(img, kernel, iterations=1):
 
     Mimics ``cv2.dilate(img, kernel, iterations=N)``.
     *kernel* shape determines the structuring element.
+    cv2.dilate squeezes single-channel (H,W,1) to (H,W).
     """
+    squeezed = False
+    if img.ndim == 3 and img.shape[2] == 1:
+        img = img[:, :, 0]
+        squeezed = True
     for _ in range(iterations):
         kh, kw = kernel.shape[:2]
         ph, pw = kh // 2, kw // 2
-        padded = np.pad(img, ((ph, ph), (pw, pw)) + ((0, 0),) * (img.ndim - 2), mode='constant', constant_values=0)
+        padded = np.pad(img, ((ph, ph), (pw, pw)), mode='constant', constant_values=0)
         out = np.zeros_like(img)
         for dy in range(kh):
             for dx in range(kw):
