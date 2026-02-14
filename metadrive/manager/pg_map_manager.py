@@ -1,7 +1,5 @@
 import pickle
 
-from tqdm import tqdm
-
 from metadrive.component.map.pg_map import PGMap, MapGenerateMethod
 from metadrive.manager.base_manager import BaseManager
 from metadrive.utils.utils import get_time_str
@@ -77,6 +75,7 @@ class PGMapManager(BaseManager):
         """
         Call this function to generate all maps before using them
         """
+        from tqdm import tqdm
         for seed in tqdm(self.maps.keys(), desc="Generate maps"):
             config = self.engine.global_config.copy()
             current_seed = seed
@@ -99,6 +98,7 @@ class PGMapManager(BaseManager):
             file_name = "{}_{}_{}.json".format(start_seed, end_seed, get_time_str())
         self.generate_all_maps()
         ret = {}
+        from tqdm import tqdm
         for seed, map in tqdm(self.maps.items(), desc="Dump maps"):
             ret[seed] = map.get_meta_data()
         with open(file_name, "wb+") as file:
@@ -119,6 +119,7 @@ class PGMapManager(BaseManager):
             self.env_num, self.start_seed, map_num, start_seed
         )
 
+        from tqdm import tqdm
         for i in tqdm(range(self.env_num), desc="Load maps"):
             loaded_seed = i + start_seed
             map_data = loaded_map_data[loaded_seed]

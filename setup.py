@@ -36,23 +36,12 @@ packages = find_namespace_packages(
 print("We will install the following packages: ", packages)
 
 install_requires = [
-    "requests",
     "gymnasium>=0.28",
     "numpy>=1.21.6",
-    "matplotlib",
-    "tqdm",
-    "yapf",
-    "tqdm",
-    "progressbar",
     "panda3d==1.10.14",
     "panda3d-gltf==0.13",  # 0.14 will bring some problems
-    "pillow",
     "opencv-python-headless",
-    "lxml",
-    "psutil",
     "shapely",
-    "filelock",
-    "Pygments",
 ]
 
 top_down_requirement = [
