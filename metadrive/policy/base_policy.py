@@ -2,7 +2,7 @@ import copy
 import logging
 import uuid
 from metadrive.constants import CamMask
-import gymnasium as gym
+from metadrive.utils import gym_stubs as gym
 import numpy as np
 from panda3d.core import NodePath, Material, LVector4
 from metadrive.base_class.configurable import Configurable

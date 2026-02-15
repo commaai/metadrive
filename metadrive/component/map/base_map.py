@@ -2,8 +2,8 @@ import logging
 import math
 from abc import ABC
 
-import cv2
 import numpy as np
+from metadrive.utils.cv_stubs import fill_poly, draw_polylines, dilate
 from panda3d.core import NodePath, Vec3
 
 from metadrive.base_class.base_runnable import BaseRunnable
@@ -239,7 +239,7 @@ class BaseMap(BaseRunnable, ABC):
                     int((y - center_p[1]) * pixels_per_meter) + size / 2
                 ] for x, y in polygon
             ]
-            cv2.fillPoly(mask, np.array([points]).astype(np.int32), color=color)
+            fill_poly(mask, np.array([points]).astype(np.int32), color=color)
         for line, color in polylines:
             points = [
                 [
@@ -249,7 +249,7 @@ class BaseMap(BaseRunnable, ABC):
             ]
             thickness = polyline_thickness * 2 if color == MapTerrainSemanticColor.YELLOW else polyline_thickness
             thickness = min(thickness, 2)  # clip
-            cv2.polylines(mask, np.array([points]).astype(np.int32), False, color, thickness)
+            draw_polylines(mask, np.array([points]).astype(np.int32), False, color, thickness)
 
         if "crosswalk" in layer:
             for id, sidewalk in self.crosswalks.items():
@@ -271,7 +271,7 @@ class BaseMap(BaseRunnable, ABC):
                 angle = np.arctan2(*dir) / np.pi * 180 + 180
                 # normalize to 0.4-0.714
                 angle = angle / 1000 + MapTerrainSemanticColor.get_color(MetaDriveType.CROSSWALK)
-                cv2.fillPoly(mask, np.array([points]).astype(np.int32), color=angle)
+                fill_poly(mask, np.array([points]).astype(np.int32), color=angle)
 
         #     self._semantic_map = mask
         # return self._semantic_map
@@ -321,13 +321,13 @@ class BaseMap(BaseRunnable, ABC):
                     int((y - center_p[1]) * pixels_per_meter) + size / 2
                 ] for x, y in polygon
             ]
-            cv2.fillPoly(mask, np.asarray([points]).astype(np.int32), color=[height])
+            fill_poly(mask, np.asarray([points]).astype(np.int32), color=[height])
         if need_scale:
             # Define a kernel. A 3x3 rectangle kernel
             kernel = np.ones(((extension + 1) * pixels_per_meter, (extension + 1) * pixels_per_meter), np.uint8)
 
             # Apply dilation
-            mask = cv2.dilate(mask, kernel, iterations=1)
+            mask = dilate(mask, kernel, iterations=1)
             mask = np.expand_dims(mask, axis=-1)
         #     self._height_map = mask
         # return self._height_map

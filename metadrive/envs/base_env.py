@@ -3,7 +3,7 @@ import time
 from collections import defaultdict
 from typing import Union, Dict, AnyStr, Optional, Tuple, Callable
 
-import gymnasium as gym
+from metadrive.utils import gym_stubs as gym
 import numpy as np
 from panda3d.core import PNMImage
 

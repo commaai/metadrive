@@ -12,7 +12,6 @@ from abc import ABC
 import numpy
 
 from metadrive.constants import TerrainProperty, CameraTagStateKey
-import cv2
 import numpy as np
 from panda3d.bullet import BulletRigidBodyNode, BulletPlaneShape
 from panda3d.bullet import ZUp, BulletHeightfieldShape
@@ -302,6 +301,7 @@ class Terrain(BaseObject, ABC):
         Returns:
 
         """
+        import cv2
         # clear previous mesh
         self.dynamic_nodes.clear()
         mesh = heightfield_img

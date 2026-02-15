@@ -3,9 +3,7 @@ import os
 import pathlib
 import pickle
 
-import matplotlib.pyplot as plt
 import numpy as np
-from matplotlib.pyplot import figure
 
 from metadrive.component.static_object.traffic_object import TrafficCone, TrafficBarrier
 from metadrive.component.traffic_light.base_traffic_light import BaseTrafficLight
@@ -38,6 +36,8 @@ def dict_recursive_remove_array_and_set(d):
 
 
 def draw_map(map_features, show=False):
+    import matplotlib.pyplot as plt
+    from matplotlib.pyplot import figure
     figure(figsize=(8, 6), dpi=500)
     for key, value in map_features.items():
         if MetaDriveType.is_lane(value.get("type", None)):

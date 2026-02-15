@@ -1,10 +1,6 @@
-import shapely
 import heapq
 from typing import Union
 from metadrive.utils.math import norm
-from shapely.geometry import Polygon, LineString
-from shapely.ops import split
-from shapely.geometry import Polygon
 from itertools import combinations
 
 
@@ -17,43 +13,7 @@ def cut_polygon_along_parallel_edges(polygon):
     Returns: polygon pieces, which forms the original polygon after being combined.
 
     """
-    # Your original polygon
-    # Make sure to replace this with your actual polygon
     raise DeprecationWarning("Stop using this. Not robust enough")
-    polygon = Polygon(polygon)
-    # try:
-    ret = find_longest_parallel_edges(polygon)
-    if ret is None:
-        pieces = [polygon]
-    else:
-        edges, _ = ret
-        # Identify the two parallel edges (assuming you have their coordinates)
-        edge1 = LineString(edges[0])
-        edge2 = LineString(edges[1])
-
-        # Determine how many pieces you want to split the polygon into
-        num_pieces = 5
-
-        # Create cutting lines
-        cutting_lines = []
-        for i in range(1, num_pieces):
-            # Calculate the points for the cutting line at the current split ratio
-            ratio = i / num_pieces
-            point1 = edge1.interpolate(ratio, normalized=True)
-            point2 = edge2.interpolate(ratio, normalized=True)
-            cutting_line = LineString([point1, point2])
-            cutting_lines.append(cutting_line)
-
-        # Split the polygon using the cutting lines
-        pieces = [polygon]
-        for cutting_line in cutting_lines:
-            for piece in pieces:
-                # Split each piece further
-                splitted = split(piece, cutting_line)
-                if len(splitted.geoms) > 1:  # If the piece was split
-                    pieces.remove(piece)  # Remove the original piece
-                    pieces.extend(splitted.geoms)  # Add the new pieces
-    return [piece.exterior.coords for piece in pieces][::2]
 
 
 def calculate_slope(p1, p2):
@@ -103,11 +63,11 @@ def size(edge):
     return x**2 + y**2
 
 
-def find_longest_parallel_edges(polygon: Union[shapely.geometry.Polygon, list]):
+def find_longest_parallel_edges(polygon: Union[list, object]):
     """
     Find and return the longest parallel edges of a polygon. If it can not find, return the longest two edges instead.
     Args:
-        polygon: shapely.Polygon or list of 2D points representing a polygon
+        polygon: object with .exterior.coords attribute, or list of 2D points representing a polygon
 
     Returns:
 
@@ -115,7 +75,7 @@ def find_longest_parallel_edges(polygon: Union[shapely.geometry.Polygon, list]):
 
     edges = []
     longest_parallel_edges = None
-    coords = list(polygon.exterior.coords) if isinstance(polygon, shapely.geometry.Polygon) else polygon
+    coords = list(polygon.exterior.coords) if hasattr(polygon, 'exterior') else polygon
 
     # Extract the edges from the polygon
     for i in range(len(coords) - 1):
@@ -141,16 +101,16 @@ def find_longest_parallel_edges(polygon: Union[shapely.geometry.Polygon, list]):
         return heapq.nlargest(2, edges, key=lambda edge: size(edge))
 
 
-def find_longest_edge(polygon: Union[shapely.geometry.Polygon, list]):
+def find_longest_edge(polygon: Union[list, object]):
     """
     Return the longest edge of a polygon
     Args:
-        polygon: shapely.Polygon or list of 2D points representing a polygon
+        polygon: object with .exterior.coords attribute, or list of 2D points representing a polygon
 
     Returns: the longest edge
 
     """
-    coords = list(polygon.exterior.coords) if isinstance(polygon, shapely.geometry.Polygon) else polygon
+    coords = list(polygon.exterior.coords) if hasattr(polygon, 'exterior') else polygon
     edges = []
     # Extract the edges from the polygon
     for i in range(len(coords) - 1):
@@ -158,20 +118,3 @@ def find_longest_edge(polygon: Union[shapely.geometry.Polygon, list]):
         edges.append(edge)
     edges.append((coords[-1], coords[0]))
     return heapq.nlargest(1, edges, key=lambda edge: size(edge))
-
-
-if __name__ == '__main__':
-    polygon = Polygon(
-        [
-            [356.83858017, -234.46019451], [355.12995531, -239.44667613], [358.76606674, -240.73795931],
-            [360.27632766, -235.80099687], [356.83858017, -234.46019451]
-        ]
-    )
-    parallel_edges = find_longest_parallel_edges(polygon)
-    assert parallel_edges == [
-        (
-            ((355.12995531, -239.44667613), (358.76606674, -240.73795931)),
-            ((360.27632766, -235.80099687), (356.83858017, -234.46019451))
-        )
-    ]
-    print(parallel_edges)

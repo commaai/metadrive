@@ -1,6 +1,6 @@
 from abc import ABC
 import numpy as np
-import gymnasium as gym
+from metadrive.utils import gym_stubs as gym
 from copy import deepcopy
 from metadrive.engine.logger import get_logger
 from metadrive.utils.config import Config

@@ -1,14 +1,10 @@
 import argparse
-import logging
+import fcntl
 import os
 import shutil
 import time
 import urllib.request
 from pathlib import Path
-
-import filelock
-import progressbar
-from filelock import Timeout
 
 from metadrive.constants import VERSION
 from metadrive.engine.logger import get_logger
@@ -16,22 +12,6 @@ from metadrive.version import asset_version
 
 ROOT_DIR = Path(__file__).parent
 ASSET_URL = "https://github.com/commaai/metadrive/releases/download/MetaDrive-minimal/assets.zip"
-
-
-class MyProgressBar():
-    def __init__(self):
-        self.pbar = None
-
-    def __call__(self, block_num, block_size, total_size):
-        if not self.pbar:
-            self.pbar = progressbar.ProgressBar(maxval=total_size)
-            self.pbar.start()
-
-        downloaded = block_num * block_size
-        if downloaded < total_size:
-            self.pbar.update(downloaded)
-        else:
-            self.pbar.finish()
 
 
 def _is_asset_version_file_ready():
@@ -46,7 +26,6 @@ def wait_asset_lock():
         "Wait for the asset pulling finished from another program..."
     )
     if not _is_asset_version_file_ready():
-        import time
         while not _is_asset_version_file_ready():
             logger.info("Assets not pulled yet. Waiting for 10 seconds...")
             time.sleep(10)
@@ -70,37 +49,35 @@ def pull_asset(update):
         )
         return
 
-    lock = filelock.FileLock(lock_path, timeout=1)
-
-    # Download the file
+    lock_fd = None
     try:
-        with lock:
-            # Download assets
-            logger.info("Pull assets from {} to {}".format(ASSET_URL, zip_path))
-            extra_arg = [MyProgressBar()] if logger.level == logging.INFO else []
-            urllib.request.urlretrieve(ASSET_URL, zip_path, *extra_arg)
+        lock_fd = open(lock_path, 'w')
+        try:
+            fcntl.flock(lock_fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except (IOError, OSError):
+            lock_fd.close()
+            wait_asset_lock()
+            return
 
-            # Prepare for extraction
-            if os.path.exists(assets_folder):
-                logger.info("Remove existing assets. Files: {}".format(os.listdir(assets_folder)))
-                shutil.rmtree(assets_folder, ignore_errors=True)
-            if os.path.exists(temp_assets_folder):
-                shutil.rmtree(temp_assets_folder, ignore_errors=True)
+        # Download assets
+        logger.info("Pull assets from {} to {}".format(ASSET_URL, zip_path))
+        urllib.request.urlretrieve(ASSET_URL, zip_path)
 
-            # Extract to temporary directory
-            logger.info("Extracting assets.")
-            shutil.unpack_archive(filename=zip_path, extract_dir=temp_assets_folder)
-            shutil.move(str(temp_assets_folder / 'assets'), str(ROOT_DIR))
+        # Prepare for extraction
+        if os.path.exists(assets_folder):
+            logger.info("Remove existing assets. Files: {}".format(os.listdir(assets_folder)))
+            shutil.rmtree(assets_folder, ignore_errors=True)
+        if os.path.exists(temp_assets_folder):
+            shutil.rmtree(temp_assets_folder, ignore_errors=True)
 
-    except Timeout:  # Timeout will be raised if the lock can not be acquired in 1s.
-        logger.info(
-            "Another instance of this program is already running. "
-            "Wait for the asset pulling finished from another program..."
-        )
-        wait_asset_lock()
-        logger.info("Assets are now available.")
+        # Extract to temporary directory
+        logger.info("Extracting assets.")
+        shutil.unpack_archive(filename=zip_path, extract_dir=temp_assets_folder)
+        shutil.move(str(temp_assets_folder / 'assets'), str(ROOT_DIR))
 
     finally:
+        if lock_fd is not None:
+            lock_fd.close()
         # Cleanup
         for path in [zip_path, lock_path, temp_assets_folder]:
             if os.path.exists(path):
