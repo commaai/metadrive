@@ -43,13 +43,13 @@ class BaseCamera(ImageBuffer, BaseSensor):
 
         width = self.BUFFER_W
         height = self.BUFFER_H
-        if (width > 100 or height > 100) and not self.enable_cuda:
-            # Too large height or width will cause corruption in Mac.
-            self.logger.warning(
-                "You are using too large buffer! The height is {}, and width is {}. "
-                "It may lower the sample efficiency! Consider reducing buffer size or use cuda image by"
-                " set [image_on_cuda=True].".format(height, width)
-            )
+        #if (width > 100 or height > 100) and not self.enable_cuda:
+        #    # Too large height or width will cause corruption in Mac.
+        #    self.logger.warning(
+        #        "You are using too large buffer! The height is {}, and width is {}. "
+        #        "It may lower the sample efficiency! Consider reducing buffer size or use cuda image by"
+        #        " set [image_on_cuda=True].".format(height, width)
+        #    )
         self.cuda_graphics_resource = None
         if self.enable_cuda:
             assert _cuda_enable, "Can not enable cuda rendering pipeline"
