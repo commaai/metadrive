@@ -139,7 +139,7 @@ class BaseVehicle(BaseObject, BaseVehicleState):
         self.set_metadrive_type(MetaDriveType.VEHICLE)
         use_special_color = self.config["use_special_color"]
 
-        self.render_vehicle = vehicle_config["render_vehicle"]
+        self.render_vehicle = self.config["render_vehicle"]
 
         # build vehicle physics model
         vehicle_chassis = self._create_vehicle_chassis()
