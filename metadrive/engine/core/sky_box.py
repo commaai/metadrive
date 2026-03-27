@@ -40,12 +40,8 @@ class SkyBox(BaseObject):
                 AssetLoader.file_path("../shaders", "skybox_gles.frag.glsl")
             )
         else:
-            if is_mac():
-                vert_file = "skybox_mac.vert.glsl"
-                frag_file = "skybox_mac.frag.glsl"
-            else:
-                vert_file = "skybox.vert.glsl"
-                frag_file = "skybox.frag.glsl"
+            vert_file = "skybox.vert.glsl"
+            frag_file = "skybox.frag.glsl"
             skybox_shader = Shader.load(
                 Shader.SL_GLSL, AssetLoader.file_path("../shaders", vert_file),
                 AssetLoader.file_path("../shaders", frag_file)

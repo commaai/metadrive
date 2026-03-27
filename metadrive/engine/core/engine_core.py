@@ -82,8 +82,6 @@ class EngineCore(ShowBase.ShowBase):
     DEBUG = False
     global_config = None  # global config can exist before engine initialization
     loadPrcFileData("", "window-title {}".format(EDITION))
-    loadPrcFileData("", "framebuffer-multisample 1")
-    loadPrcFileData("", "multisamples 8")
     loadPrcFileData("", "bullet-filter-algorithm groups-mask")
     loadPrcFileData("", "audio-library-name null")
     loadPrcFileData("", "model-cache-compressed-textures 1")
@@ -97,14 +95,10 @@ class EngineCore(ShowBase.ShowBase):
     # loadPrcFileData("", "allow-incomplete-render #t")
     # loadPrcFileData("", "# even-animation #t")
 
-    # loadPrcFileData("", " framebuffer-srgb truein")
     # loadPrcFileData("", "geom-cache-size 50000")
 
     # v-sync, it seems useless
     # loadPrcFileData("", "sync-video 1")
-
-    # for debug use
-    # loadPrcFileData("", "gl-version 3 2")
 
     if is_mac():
       # latest macOS supported openGL version
@@ -167,9 +161,6 @@ class EngineCore(ShowBase.ShowBase):
                 if self.global_config["show_interface"]:
                     # Disable useless camera capturing in none mode
                     self.global_config["show_interface"] = False
-
-        if is_mac() and (self.mode == RENDER_MODE_OFFSCREEN):  # Mac don't support offscreen rendering
-            self.mode = RENDER_MODE_ONSCREEN
 
         loadPrcFileData("", "win-size {} {}".format(*self.global_config["window_size"]))
 
