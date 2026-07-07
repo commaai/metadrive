@@ -42,10 +42,8 @@ class RGBCamera(BaseCamera):
         fbprops.float_color = True
         fbprops.set_rgba_bits(16, 16, 16, 16)
         fbprops.set_depth_bits(24)
-        if is_mac():
-          fbprops.set_multisamples(4)
-        else:
-          fbprops.set_multisamples(16)
+        # 4x is the max llvmpipe supports, so headless software rendering works
+        fbprops.set_multisamples(4)
         self.scene_tex = p3d.Texture()
         self.scene_tex.set_format(p3d.Texture.F_rgba16)
         self.scene_tex.set_component_type(p3d.Texture.T_float)
