@@ -83,7 +83,8 @@ class EngineCore(ShowBase.ShowBase):
     global_config = None  # global config can exist before engine initialization
     loadPrcFileData("", "window-title {}".format(EDITION))
     loadPrcFileData("", "framebuffer-multisample 1")
-    loadPrcFileData("", "multisamples 8")
+    # 4x is the max llvmpipe supports, so headless software rendering works
+    loadPrcFileData("", "multisamples 4")
     loadPrcFileData("", "bullet-filter-algorithm groups-mask")
     loadPrcFileData("", "audio-library-name null")
     loadPrcFileData("", "model-cache-compressed-textures 1")
@@ -113,7 +114,7 @@ class EngineCore(ShowBase.ShowBase):
       loadPrcFileData("", "multisamples 4")
     else:
       loadPrcFileData("", "framebuffer-multisample 1")
-      loadPrcFileData("", "multisamples 8")
+      loadPrcFileData("", "multisamples 4")
 
     def __init__(self, global_config):
         # if EngineCore.global_config is not None:
@@ -310,7 +311,7 @@ class EngineCore(ShowBase.ShowBase):
                     )
                 else:
                     self.pbrpipe = init(
-                        msaa_samples=16,
+                        msaa_samples=4,
                         use_hardware_skinning=True,
                         # use_normal_maps=True,
                         use_330=False
